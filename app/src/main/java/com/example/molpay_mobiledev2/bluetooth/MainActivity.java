@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
     private static final UUID MY_UUID_INSECURE = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
 
     private static final int REQUEST_ENABLE_BT = 1;
-    BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+    BluetoothAdapter bluetoothAdapter;
     AcceptThread acceptThread;
     ConnectedThread connectedThread;
 
@@ -46,6 +46,8 @@ public class MainActivity extends AppCompatActivity {
         _view_data = findViewById(R.id.textView);
         _view_data.setMovementMethod(new ScrollingMovementMethod());
 
+
+        bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if (bluetoothAdapter != null && !bluetoothAdapter.isEnabled()) {
             Intent enableBtIntent = new
                     Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
@@ -63,9 +65,8 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(IsPressed){
-            return true;
-        }
+        if(IsPressed || bluetoothAdapter == null)return true;
+
         switch (item.getItemId()){
             case R.id.onConnection:
                 if(!IsConnected){
@@ -79,7 +80,6 @@ public class MainActivity extends AppCompatActivity {
                     if(acceptThread != null){
                         acceptThread.cancel();
                         acceptThread = null;
-
                     }
                     if(connectedThread != null){
                         connectedThread.cancel();
@@ -102,6 +102,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void SendMessage(View v) {
         byte[] bytes = _send_data.getText().toString().getBytes(Charset.defaultCharset());
+        if(bluetoothAdapter == null)return;
         if(!IsConnected){
             runOnUiThread(()-> _view_data.append("\nService device not connected"));
             return;
@@ -247,6 +248,7 @@ public class MainActivity extends AppCompatActivity {
                         _view_data.append("\n");
                         _view_data.append(Html.fromHtml("<font color='#FF0000'>"+ e.getMessage()
                                 + "</font>"));
+                        _view_data.append("\nConnection lost");
                         _menu.getItem(0).setIcon(android.R.drawable.button_onoff_indicator_off);
                     });
                     break;

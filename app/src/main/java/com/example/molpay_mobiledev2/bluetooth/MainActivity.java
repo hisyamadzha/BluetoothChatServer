@@ -114,7 +114,7 @@ public class MainActivity extends AppCompatActivity {
         // The local server socket
         private final BluetoothServerSocket mmServerSocket;
 
-        public AcceptThread() {
+        private AcceptThread() {
             BluetoothServerSocket tmp = null;
 
             // Create a new listening server socket
@@ -167,7 +167,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        public void cancel() {
+        private void cancel() {
             try {
                 mmServerSocket.close();
             } catch (IOException e) {
@@ -192,7 +192,7 @@ public class MainActivity extends AppCompatActivity {
         private final InputStream mmInStream;
         private final OutputStream mmOutStream;
 
-        public ConnectedThread(BluetoothSocket socket) {
+        private ConnectedThread(BluetoothSocket socket) {
             mmSocket = socket;
             InputStream tmpIn = null;
             OutputStream tmpOut = null;
@@ -256,7 +256,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        public void write(byte[] bytes) {
+        private void write(byte[] bytes) {
             String text = new String(bytes, Charset.defaultCharset());
             runOnUiThread(()-> {
                 _view_data.append("\n");
@@ -276,7 +276,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        public void cancel() {
+        private void cancel() {
             try {
                 mmSocket.close();
             } catch (IOException e) {
